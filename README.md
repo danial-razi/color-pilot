@@ -9,7 +9,6 @@
 - **Extract from Images**: Upload any image and instantly get a palette of its dominant colors.
 - **Extract from Code**: Paste CSS code to pull out all defined color values.
 - **Drag & Drop Reordering**: Easily rearrange colors within your palette to get the perfect sequence.
-- **Accessibility Insights**: Each color swatch displays its WCAG contrast ratio against black or white text, helping you build accessible designs.
 - **Save Palettes**: Store your favorite palettes directly in your browser using LocalStorage.
 - **Versatile Export Options**: Export palettes as JSON for web projects or Adobe Swatch Exchange (.ase) files.
 - **One-Click Copy**: Copy any color's hex code to your clipboard instantly.

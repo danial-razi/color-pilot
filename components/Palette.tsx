@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { getTextColorForBackground, getContrastRatio } from '../utils/colors';
+import { getTextColorForBackground } from '../utils/colors';
 import { ClipboardIcon, CheckIcon } from './Icons';
 
 interface PaletteProps {
@@ -11,7 +11,6 @@ const ColorCard: React.FC<{ color: string }> = ({ color }) => {
   const [copied, setCopied] = useState(false);
   const textColorClassName = getTextColorForBackground(color);
   const textColorHex = textColorClassName === 'text-white' ? '#FFFFFF' : '#000000';
-  const contrastRatio = getContrastRatio(color, textColorHex).toFixed(2);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(color);
@@ -38,14 +37,8 @@ const ColorCard: React.FC<{ color: string }> = ({ color }) => {
             {copied ? <CheckIcon /> : <ClipboardIcon />}
           </button>
         </div>
-        <div className="mt-auto flex flex-col">
+        <div className="mt-auto">
           <span className={textColorClassName}>{color}</span>
-          <span
-            className={`${textColorClassName} text-xs opacity-75 mt-1`}
-            aria-label={`Contrast ratio is ${contrastRatio} to 1`}
-          >
-            {contrastRatio}:1
-          </span>
         </div>
       </div>
     </div>
