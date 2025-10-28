@@ -1,6 +1,27 @@
 # ColorPilot
 
+Live app: https://danial-razi.github.io/color-pilot
+
 **A minimal, offline-first color palette generator that extracts beautiful color schemes from images and CSS code. Designed for developers and designers to quickly capture and save inspiration.**
+
+---
+
+## Installing as a PWA (Recommended)
+
+ColorPilot is built to run best as an installed Progressive Web App.
+
+1. Open the live site in Chrome, Edge, Safari, or another PWA-capable browser.
+2. Use the browser’s “Install” / “Add to Home Screen” option (usually in the address bar or menu).
+3. Launch the installed app from your desktop, Start menu, or mobile home screen.
+4. The app works offline after the first visit and updates automatically whenever a new version is published.
+
+If you’re testing locally:
+```bash
+npm install
+npm run build
+npm run preview
+```
+Then open the preview URL and install the app the same way.
 
 ---
 
@@ -15,20 +36,13 @@
 - **Progressive Web App (PWA)**: Works offline and can be installed on your device for a native-like experience.
 - **Sleek & Minimal UI**: A clean, intuitive interface that stays out of your way.
 
-## Tech Stack
+## Getting Started (Local Development)
 
-- **Frontend**: React, TypeScript, Tailwind CSS
-- **Color Extraction**: [ColorThief.js](https://github.com/lokesh/color-thief)
-- **Storage**: Browser LocalStorage
-- **Build Tool**: Vite
-
-## Getting Started
-
-To run ColorPilot locally:
+To run ColorPilot locally for development:
 
 1. Clone the repository.
    ```bash
-   git clone https://github.com/your-username/colorpilot.git
+   git clone https://github.com/danial-razi/color-pilot.git
    cd colorpilot
    ```
 2. Install dependencies.
@@ -46,22 +60,6 @@ To run ColorPilot locally:
    npm run preview
    ```
    This serves the built assets together with the service worker so you can verify offline behaviour before deploying.
-
-## Deployment (GitHub Pages)
-
-GitHub Actions is pre-configured to build and publish the site to GitHub Pages from the `main` branch.
-
-1. Enable GitHub Pages in the repository settings and select **GitHub Actions** as the source.
-2. Push to `main` or trigger the workflow manually. The workflow runs `npm ci`, `npm run build`, and uploads the `dist` folder to Pages.
-3. The action automatically sets the correct base path using the repository name, so the app is served from `https://<user>.github.io/<repo>/`.
-
-If you need a different base path, update the `VITE_BASE_PATH` value in `.github/workflows/deploy.yml` and, if necessary, the `repoBase` fallback inside `vite.config.ts`.
-
-## Installing as a PWA
-
-- Open the deployed site in a supported browser (Chrome, Edge, Safari, etc.).
-- Use the browser’s “Install” or “Add to Home Screen” option.
-- Once installed, the app works offline thanks to the generated service worker and precached assets.
 
 ## License
 
