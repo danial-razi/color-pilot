@@ -21,28 +21,32 @@ const ColorCard: React.FC<{ color: string }> = ({ color }) => {
 
   return (
     <div
-      className="relative rounded-lg h-32 md:h-48 flex flex-col justify-end p-4 text-sm font-mono group transition-all duration-300"
+      className="relative rounded-lg h-32 md:h-48 flex flex-col p-4 text-sm font-mono group transition-all duration-300"
       style={{ backgroundColor: color }}
     >
-      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
-      <div className="relative z-10">
-        <div className="flex flex-col">
-            <span className={textColorClassName}>{color}</span>
-            <span 
-                className={`${textColorClassName} text-xs opacity-75 mt-1`} 
-                aria-label={`Contrast ratio is ${contrastRatio} to 1`}
-            >
-                {contrastRatio}:1
-            </span>
+      <div className="absolute inset-0 pointer-events-none bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
+      <div className="relative z-10 flex h-full flex-col">
+        <div className="flex justify-end">
+          <button
+            onClick={handleCopy}
+            className={`p-1.5 rounded-full transition-all ${textColorClassName} bg-white/20 hover:bg-white/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80`}
+            draggable={false}
+            onDragStart={(event) => event.preventDefault()}
+            aria-label="Copy color code"
+            title="Copy color to clipboard"
+          >
+            {copied ? <CheckIcon /> : <ClipboardIcon />}
+          </button>
         </div>
-        <button
-          onClick={handleCopy}
-          className={`absolute bottom-3 right-3 p-1.5 rounded-full transition-all ${textColorClassName} bg-white/20 hover:bg-white/40`}
-          aria-label="Copy color code"
-          title="Copy color to clipboard"
-        >
-          {copied ? <CheckIcon /> : <ClipboardIcon />}
-        </button>
+        <div className="mt-auto flex flex-col">
+          <span className={textColorClassName}>{color}</span>
+          <span
+            className={`${textColorClassName} text-xs opacity-75 mt-1`}
+            aria-label={`Contrast ratio is ${contrastRatio} to 1`}
+          >
+            {contrastRatio}:1
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -57,6 +61,7 @@ const Palette: React.FC<PaletteProps> = ({ colors, onReorder }) => {
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     dragItem.current = index;
     e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(index));
     setTimeout(() => setIsDragging(true), 0);
   };
 
@@ -72,7 +77,11 @@ const Palette: React.FC<PaletteProps> = ({ colors, onReorder }) => {
     setIsDragging(false);
   };
 
-  const handleDrop = () => {
+  const handleDrop = (index: number) => {
+    if (dragItem.current !== null && dragOverIndex === null) {
+      setDragOverIndex(index);
+    }
+
     if (dragItem.current === null || dragOverIndex === null || dragItem.current === dragOverIndex) {
       handleDragEnd();
       return;
@@ -107,9 +116,12 @@ const Palette: React.FC<PaletteProps> = ({ colors, onReorder }) => {
           draggable
           onDragStart={(e) => handleDragStart(e, index)}
           onDragEnter={() => handleDragEnter(index)}
-          onDrop={handleDrop}
+          onDragOver={(e) => {
+            e.preventDefault();
+            handleDragEnter(index);
+          }}
+          onDrop={() => handleDrop(index)}
           onDragEnd={handleDragEnd}
-          onDragOver={(e) => e.preventDefault()}
           title="Drag to reorder"
           className={`
             cursor-move rounded-lg transition-all duration-200 
