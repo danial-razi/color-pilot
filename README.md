@@ -1,20 +1,49 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# ColorPilot 🎨
 
-# Run and deploy your AI Studio app
+**A minimal, offline-first color palette generator that extracts beautiful color schemes from images and CSS code. Designed for developers and designers to quickly capture and save inspiration.**
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/drive/1i8eTuL8pMAhNoB3Bl2Dg_yJ0fVMVYdDl
+## ✨ Features
 
-## Run Locally
+- **Extract from Images**: Upload any image and instantly get a palette of its dominant colors.
+- **Extract from Code**: Paste CSS code to pull out all defined color values.
+- **Drag & Drop Reordering**: Easily rearrange colors within your palette to get the perfect sequence.
+- **Accessibility Insights**: Each color swatch displays its WCAG contrast ratio against black or white text, helping you build accessible designs.
+- **Save Palettes**: Store your favorite palettes directly in your browser using LocalStorage.
+- **Versatile Export Options**: Export your palettes as JSON for web projects or as Adobe Swatch Exchange (.ase) files for seamless integration with Adobe Creative Cloud apps.
+- **One-Click Copy**: Copy any color's hex code to your clipboard instantly.
+- **Progressive Web App (PWA)**: Works offline and can be installed on your device for a native-like experience.
+- **Sleek & Minimal UI**: A clean, intuitive interface that stays out of your way.
 
-**Prerequisites:**  Node.js
+## 🚀 Tech Stack
 
+- **Frontend**: React, TypeScript, Tailwind CSS
+- **Color Extraction**: [ColorThief.js](https://github.com/lokesh/color-thief)
+- **Storage**: Browser LocalStorage
+- **Build Tool**: Vite
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🛠️ Getting Started
+
+To run ColorPilot locally, follow these steps:
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/colorpilot.git
+    cd colorpilot
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Start the development server:**
+    ```bash
+    npm run dev
+    ```
+    The application will be available at `http://localhost:5173` (or another port if 5173 is in use).
+
+## 📄 License
+
+This project is licensed under the MIT License.

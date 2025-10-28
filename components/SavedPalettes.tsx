@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Palette as PaletteType } from '../types';
 import { TrashIcon } from './Icons';
@@ -25,7 +24,11 @@ const SavedPalettes: React.FC<SavedPalettesProps> = ({ palettes, onSelect, onDel
           key={palette.id}
           className="bg-slate-800 p-3 rounded-lg flex items-center justify-between group hover:bg-slate-700 transition-colors"
         >
-          <div className="flex items-center gap-4 cursor-pointer flex-grow" onClick={() => onSelect(palette)}>
+          <div 
+            className="flex items-center gap-4 cursor-pointer flex-grow" 
+            onClick={() => onSelect(palette)}
+            title="Load this palette"
+          >
             <div className="flex -space-x-2">
               {palette.colors.slice(0, 5).map((color) => (
                 <div
@@ -44,6 +47,7 @@ const SavedPalettes: React.FC<SavedPalettesProps> = ({ palettes, onSelect, onDel
             onClick={() => onDelete(palette.id)}
             className="p-2 rounded-full text-slate-500 hover:text-red-400 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-all"
             aria-label="Delete palette"
+            title="Delete this palette"
           >
             <TrashIcon />
           </button>

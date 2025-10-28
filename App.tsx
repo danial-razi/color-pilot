@@ -5,7 +5,7 @@ import { rgbToHex, extractColorsFromCss } from './utils/colors';
 import { exportAsJson, exportAsAse } from './utils/export';
 import Palette from './components/Palette';
 import SavedPalettes from './components/SavedPalettes';
-import { PictureIcon, CodeBracketIcon, BookmarkIcon, ArrowDownTrayIcon } from './components/Icons';
+import { PictureIcon, CodeBracketIcon, BookmarkIcon, ArrowDownTrayIcon, MagnifyingGlassPlusIcon, MagnifyingGlassMinusIcon, ArrowPathIcon } from './components/Icons';
 
 // This is to inform TypeScript about the ColorThief library loaded from CDN
 declare const ColorThief: any;
@@ -19,6 +19,12 @@ const App: React.FC = () => {
   const [cssText, setCssText] = useState<string>('/* Paste your CSS here */\n\nbody {\n  background-color: #0f172a;\n  color: #f8fafc;\n}\n\na {\n  color: rgb(59, 130, 246);\n}');
   const [savedPalettes, setSavedPalettes] = useLocalStorage<PaletteType[]>('colorpilot-palettes', []);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+
+  // State for zoom and pan
+  const [zoom, setZoom] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -34,6 +40,11 @@ const App: React.FC = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, []);
+
+  const resetZoomAndPan = useCallback(() => {
+    setZoom(1);
+    setPosition({ x: 0, y: 0 });
   }, []);
   
   const extractFromImage = useCallback(() => {
@@ -56,6 +67,7 @@ const App: React.FC = () => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      resetZoomAndPan();
       setIsLoading(true);
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -98,6 +110,7 @@ const App: React.FC = () => {
   const handleSelectSavedPalette = (palette: PaletteType) => {
     setCurrentPalette(palette.colors);
     setImagePreview(null);
+    resetZoomAndPan();
     setInputMode('image');
   }
   
@@ -125,10 +138,34 @@ const App: React.FC = () => {
     }
   };
 
+  // Zoom and Pan Handlers
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button !== 0 || zoom <= 1) return;
+    e.preventDefault();
+    setIsPanning(true);
+    setPanStart({ x: e.clientX - position.x, y: e.clientY - position.y });
+  };
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isPanning) return;
+    e.preventDefault();
+    setPosition({ x: e.clientX - panStart.x, y: e.clientY - panStart.y });
+  };
+  const handleMouseUpOrLeave = () => setIsPanning(false);
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const zoomFactor = 1.1;
+    const newZoom = e.deltaY < 0 ? zoom * zoomFactor : zoom / zoomFactor;
+    setZoom(Math.max(1, Math.min(newZoom, 5)));
+  };
+  const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.2, 5));
+  const handleZoomOut = () => setZoom(prev => Math.max(1, prev - 0.2));
+
+
   const TabButton: React.FC<{ mode: InputMode; label: string; children: React.ReactNode }> = ({ mode, label, children }) => (
     <button
       onClick={() => setInputMode(mode)}
       className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${inputMode === mode ? 'bg-sky-500 text-white' : 'text-slate-400 hover:bg-slate-700'}`}
+      title={`Switch to ${label} mode`}
     >
       {children}
       {label}
@@ -154,19 +191,52 @@ const App: React.FC = () => {
             {inputMode === 'image' && (
               <div>
                 <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageChange} className="hidden" />
-                <div 
+                {imagePreview ? (
+                  <div className="relative group">
+                    <div 
+                      onMouseDown={handleMouseDown}
+                      onMouseMove={handleMouseMove}
+                      onMouseUp={handleMouseUpOrLeave}
+                      onMouseLeave={handleMouseUpOrLeave}
+                      onWheel={handleWheel}
+                      className={`h-48 bg-slate-900/50 rounded-lg overflow-hidden transition-colors ${zoom > 1 ? (isPanning ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
+                      title="Scroll to zoom, drag to pan"
+                    >
+                      <img 
+                        ref={imageRef} 
+                        src={imagePreview} 
+                        alt="Preview"
+                        draggable="false"
+                        onLoad={extractFromImage}
+                        className="w-full h-full object-contain transition-transform duration-100 ease-out"
+                        style={{ transform: `scale(${zoom}) translate(${position.x}px, ${position.y}px)` }}
+                      />
+                    </div>
+                    <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <button onClick={handleZoomIn} title="Zoom In" className="p-1.5 bg-slate-800/70 text-white rounded-full hover:bg-slate-700"><MagnifyingGlassPlusIcon /></button>
+                        <button onClick={handleZoomOut} title="Zoom Out" className="p-1.5 bg-slate-800/70 text-white rounded-full hover:bg-slate-700"><MagnifyingGlassMinusIcon /></button>
+                        <button onClick={resetZoomAndPan} title="Reset View" className="p-1.5 bg-slate-800/70 text-white rounded-full hover:bg-slate-700"><ArrowPathIcon /></button>
+                    </div>
+                    <button 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute bottom-2 left-2 text-xs bg-slate-800/70 text-white py-1 px-2 rounded-full hover:bg-slate-700 transition-colors opacity-0 group-hover:opacity-100 z-10"
+                      title="Upload a different image"
+                    >
+                      Change Image
+                    </button>
+                  </div>
+                ) : (
+                  <div 
                     onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-slate-600 rounded-lg p-6 text-center cursor-pointer hover:border-sky-500 hover:bg-slate-800 transition-colors"
-                >
-                    {imagePreview ? (
-                        <img ref={imageRef} src={imagePreview} alt="Preview" className="max-h-40 mx-auto rounded-md" onLoad={extractFromImage} />
-                    ) : (
-                        <div className="text-slate-400">
-                          <PictureIcon />
-                          <p>Click or drop image here</p>
-                        </div>
-                    )}
-                </div>
+                    className="border-2 border-dashed border-slate-600 rounded-lg p-6 h-48 flex flex-col justify-center items-center text-center cursor-pointer hover:border-sky-500 hover:bg-slate-800 transition-colors"
+                    title="Click to upload an image"
+                  >
+                    <div className="text-slate-400">
+                      <PictureIcon />
+                      <p>Click or drop image here</p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             {inputMode === 'css' && (
@@ -181,6 +251,7 @@ const App: React.FC = () => {
                   onClick={handleCssExtract}
                   disabled={isLoading}
                   className="w-full bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-sky-500 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors"
+                  title="Extract colors from the CSS code"
                 >
                   {isLoading ? 'Extracting...' : 'Extract Colors from CSS'}
                 </button>
@@ -206,6 +277,7 @@ const App: React.FC = () => {
                         <button
                             onClick={handleSavePalette}
                             className="flex items-center gap-2 bg-slate-700 text-white font-semibold py-2 px-4 rounded-lg hover:bg-slate-600 transition-colors"
+                            title="Save the current palette"
                         >
                             <BookmarkIcon />
                             Save Palette
@@ -216,6 +288,7 @@ const App: React.FC = () => {
                                 className="flex items-center gap-2 bg-slate-700 text-white font-semibold py-2 px-4 rounded-lg hover:bg-slate-600 transition-colors"
                                 aria-haspopup="true"
                                 aria-expanded={isExportMenuOpen}
+                                title="Export the current palette"
                             >
                                 <ArrowDownTrayIcon />
                                 Export
@@ -231,6 +304,7 @@ const App: React.FC = () => {
                                         onClick={(e) => { e.preventDefault(); handleExport('json'); }} 
                                         className="block px-4 py-2 text-sm text-slate-200 hover:bg-slate-600 w-full text-left"
                                         role="menuitem"
+                                        title="Export as a .json file"
                                     >
                                         Export as JSON (.json)
                                     </a>
@@ -239,6 +313,7 @@ const App: React.FC = () => {
                                         onClick={(e) => { e.preventDefault(); handleExport('ase'); }} 
                                         className="block px-4 py-2 text-sm text-slate-200 hover:bg-slate-600 w-full text-left"
                                         role="menuitem"
+                                        title="Export as an Adobe .ase file"
                                     >
                                         Export for Adobe (.ase)
                                     </a>

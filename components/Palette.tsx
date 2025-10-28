@@ -39,6 +39,7 @@ const ColorCard: React.FC<{ color: string }> = ({ color }) => {
           onClick={handleCopy}
           className={`absolute bottom-3 right-3 p-1.5 rounded-full transition-all ${textColorClassName} bg-white/20 hover:bg-white/40`}
           aria-label="Copy color code"
+          title="Copy color to clipboard"
         >
           {copied ? <CheckIcon /> : <ClipboardIcon />}
         </button>
@@ -109,10 +110,11 @@ const Palette: React.FC<PaletteProps> = ({ colors, onReorder }) => {
           onDrop={handleDrop}
           onDragEnd={handleDragEnd}
           onDragOver={(e) => e.preventDefault()}
+          title="Drag to reorder"
           className={`
             cursor-move rounded-lg transition-all duration-200 
             ${!isDragging ? 'hover:scale-105' : ''} 
-            ${dragOverIndex === index ? 'ring-2 ring-offset-2 ring-offset-slate-800/50 ring-sky-400' : ''}
+            ${dragOverIndex === index ? 'ring-2 ring-offset-2 ring-offset-slate-800/50 ring-sky-400 animate-pulse' : ''}
             ${isDragging && dragItem.current === index ? 'opacity-50 scale-95' : 'opacity-100'}
           `}
         >
