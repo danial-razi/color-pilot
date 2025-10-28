@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import ColorThief from 'colorthief';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { Palette as PaletteType, InputMode } from './types';
 import { rgbToHex, extractColorsFromCss } from './utils/colors';
@@ -6,9 +7,6 @@ import { exportAsJson, exportAsAse } from './utils/export';
 import Palette from './components/Palette';
 import SavedPalettes from './components/SavedPalettes';
 import { PictureIcon, CodeBracketIcon, BookmarkIcon, ArrowDownTrayIcon, MagnifyingGlassPlusIcon, MagnifyingGlassMinusIcon, ArrowPathIcon } from './components/Icons';
-
-// This is to inform TypeScript about the ColorThief library loaded from CDN
-declare const ColorThief: any;
 
 const App: React.FC = () => {
   const [inputMode, setInputMode] = useState<InputMode>('image');
