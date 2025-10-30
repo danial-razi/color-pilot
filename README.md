@@ -1,3 +1,7 @@
+[![Live app](https://img.shields.io/website?label=Live%20app&style=for-the-badge&url=https%3A%2F%2Fdanial-razi.github.io%2Fcolor-pilot&up_message=online)](https://danial-razi.github.io/color-pilot)
+[![PWA ready](https://img.shields.io/badge/PWA-Offline%20first-5BA5D8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![Built with React](https://img.shields.io/badge/built%20with-React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+
 # ColorPilot
 
 Live app: https://danial-razi.github.io/color-pilot

@@ -1,8 +1,28 @@
 {
-  "name": "colorpilot",
+  "name": "color-pilot",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "ColorPilot is an offline-first color palette generator PWA that extracts rich color schemes from images and CSS code.",
+  "keywords": [
+    "color palette generator",
+    "color scheme",
+    "pwa",
+    "offline",
+    "react",
+    "vite",
+    "design tools"
+  ],
+  "homepage": "https://danial-razi.github.io/color-pilot",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danial-razi/color-pilot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/danial-razi/color-pilot/issues"
+  },
+  "author": "Danial Razi",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
