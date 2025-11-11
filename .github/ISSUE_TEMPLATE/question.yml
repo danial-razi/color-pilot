@@ -1,0 +1,22 @@
+name: ❓ Question / Discussion
+description: Ask a question or start a discussion about ColorPilot
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question about ColorPilot? Please fill this form to help us answer quickly.
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: E.g., "How do I use ColorPilot to create a color palette?"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context or Background
+      description: Give us some context (why you’re asking, what you tried, etc.)

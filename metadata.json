@@ -1,0 +1,5 @@
+{
+  "name": "ColorPilot",
+  "description": "A minimal, offline-first color palette generator that extracts beautiful color schemes from images and CSS code. Designed for developers and designers to quickly capture and save inspiration.",
+  "requestFramePermissions": []
+}
